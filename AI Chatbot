@@ -1,0 +1,75 @@
+#include <iostream>
+#include <string>
+#include <vector>
+#include <algorithm>
+
+class Chatbot {
+public:
+    void greet() {
+        std::cout << "Welcome to the AI Chatbot! Type 'exit' to quit.\n";
+    }
+
+    std::string respond(const std::string& user_input) {
+        if (user_input == "exit") {
+            return "Goodbye!";
+        }
+
+        updateContext(user_input);
+        std::string sentiment = analyzeSentiment(user_input);
+        std::string response = generateResponse(sentiment);
+        return response;
+    }
+
+private:
+    std::vector<std::string> context;
+
+    void updateContext(const std::string& user_input) {
+        context.push_back(user_input);
+    }
+
+    std::string analyzeSentiment(const std::string& text) {
+        std::vector<std::string> positive_words = {"good", "great", "happy", "love"};
+        std::vector<std::string> negative_words = {"bad", "sad", "hate", "angry"};
+
+        for (const auto& word : positive_words) {
+            if (text.find(word) != std::string::npos) {
+                return "positive";
+            }
+        }
+        for (const auto& word : negative_words) {
+            if (text.find(word) != std::string::npos) {
+                return "negative";
+            }
+        }
+        return "neutral";
+    }
+
+    std::string generateResponse(const std::string& sentiment) {
+        if (sentiment == "positive") {
+            return "I'm glad to hear that!";
+        } else if (sentiment == "negative") {
+            return "I'm sorry to hear that.";
+        } else {
+            return "Interesting! Tell me more.";
+        }
+    }
+};
+
+int main() {
+    Chatbot chatbot;
+    chatbot.greet();
+
+    std::string user_input;
+    while (true) {
+        std::cout << "You: ";
+        std::getline(std::cin, user_input);
+        std::string response = chatbot.respond(user_input);
+        std::cout << "Bot: " << response << "\n";
+
+        if (user_input == "exit") {
+            break;
+        }
+    }
+
+    return 0;
+}
